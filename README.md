@@ -15,6 +15,7 @@ This repository contains the official code for the ICCV paper:
 - Upload model checkpoints  
 - Detailed usage instructions and example scripts  
 
+For any questions or collaboration inquiries, please contact: fjw826244895@163.com
 
 ## 📄 Citation
 ```bibtex
