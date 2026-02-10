@@ -6,13 +6,18 @@ This repository contains the official code for the ICCV paper:
 *(Jianwei Fei, Yunshu Dai, Peipeng Yu, Zhe Kong, Jiantao Zhou, Zhihua Xia, ICCV 2025)*
 
 ## Current Status
-
 - ✅ Initial code uploaded
 - ⏳ Checkpoints and full usage instructions will be added soon
 
-## 📂 Planned Updates
 
-- Upload model checkpoints  
+## 📦 Pretrained Checkpoint
+
+The pretrained model checkpoint can be downloaded from Google Drive:
+
+👉 **[Download checkpoint (ckpt)](https://drive.google.com/drive/folders/1ztJPBe9MYXiLTF1sfPjCOIxKDdc1nIjW)**
+
+
+## 📂 Planned Updates
 - Detailed usage instructions and example scripts  
 
 For any questions or collaboration inquiries, please contact: fjw826244895@163.com
