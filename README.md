@@ -10,11 +10,14 @@ This repository contains the official code for the ICCV paper:
 - ⏳ Checkpoints and full usage instructions will be added soon
 
 
-## 📦 Pretrained Checkpoint
+## 📦 Pretrained Checkpoints
 
-The pretrained model checkpoint can be downloaded from Google Drive:
+We provide **two pretrained models** for different use cases.
 
-👉 **[Download checkpoint (ckpt)](https://drive.google.com/drive/folders/1ztJPBe9MYXiLTF1sfPjCOIxKDdc1nIjW)**
+The model checkpoints can be downloaded from Google Drive:
+
+👉 **[Download checkpoints (ckpt)](https://drive.google.com/drive/folders/1ztJPBe9MYXiLTF1sfPjCOIxKDdc1nIjW)**
+
 
 
 ## 📂 Planned Updates
