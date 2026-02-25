@@ -65,38 +65,12 @@ class CustomVAE(nn.Module):
 my_decoder = CustomVAE()
 
 
-filename = 'captions_val2017.json'
-with open(filename, 'r') as file:
-    data = json.load(file)
-annotations = data['annotations']
-
-first_captions = {}
-for annotation in annotations:
-    image_id = annotation['image_id']
-    if image_id not in first_captions:
-        first_captions[image_id] = annotation['caption']
-
-captions_list = list(first_captions.values())
-
-
-from collections import Counter
-counter = Counter(captions_list)
-suffix_tracker = {}
-updated_captions = []
-
-for name in captions_list:
-    if counter[name] > 1:
-        if name not in suffix_tracker:
-            suffix_tracker[name] = 1
-        suffix_tracker[name] += 1
-        new_name = f"{name}_{suffix_tracker[name]}"
-        updated_captions.append(new_name)
-    else:
-        updated_captions.append(name)
-
-captions_list = updated_captions
-print(len(set(captions_list)))
-
+prompts = [
+    "a high-tech laboratory with neon lights",
+    "a serene landscape of mountains reflected in a crystal clear lake",
+    "a futuristic city with flying cars and tall skyscrapers",
+    "a cozy wooden cabin in a snowy forest at twilight"
+]
 
 with torch.no_grad():
     torch.manual_seed(42)
@@ -104,26 +78,24 @@ with torch.no_grad():
     np.random.seed(42)
     generator = torch.Generator(device="cuda").manual_seed(42)
 
-    # Load the Stable Diffusion model
     pipe = StableDiffusionPipeline.from_pretrained(
         'stabilityai/stable-diffusion-2-base', 
         safety_checker=None, 
         requires_safety_checker=False
     ).to(device)
-    import time
-    total_time_ms = 0  # To accumulate total elapsed time
 
-    # Run the loop 10 times
-    for group in captions_list[:10]:
-        start_time = time.time()  # Start time in seconds
+    print(f"Starting generation for {len(prompts)} prompts...")
+    
+    total_time_ms = 0
+    for i, prompt in enumerate(prompts):
+        start_time = time.time()
 
-    #    Assuming `grouped_captions` is predefined
+        # Dual Fingerprinting: 32-bit + 32-bit
         watermark1 = torch.zeros((1, 32), dtype=torch.float).random_(0, 2).to(device)
         watermark2 = torch.zeros((1, 32), dtype=torch.float).random_(0, 2).to(device)
         
-        # Generate images
-        imgs = pipe(
-            group, 
+        output = pipe(
+            prompt, 
             num_images_per_prompt=1, 
             generator=generator, 
             height=512, 
@@ -131,16 +103,14 @@ with torch.no_grad():
             if_wm=True, 
             wm=[watermark1, watermark2], 
             my_decoder=my_decoder
-        ).images
+        )
         
+        img = output.images[0]
+        img.save(f"output_{i}.png")
+        
+        elapsed_time_ms = (time.time() - start_time) * 1000
+        total_time_ms += elapsed_time_ms
+        print(f"Prompt {i} done. Time: {elapsed_time_ms:.2f}ms")
 
-    end_time = time.time()  # End time in seconds
-    elapsed_time_ms = (end_time - start_time) * 1000  # Convert to milliseconds
-    
-    # Add to the total time
-    total_time_ms += elapsed_time_ms
-
-
-# Calculate the average time
-average_time_ms = total_time_ms / 10
-print(f"\nAverage time per iteration: {average_time_ms:.2f} ms")
+    average_time = total_time_ms / len(prompts)
+    print(f"\nAverage time per image: {average_time:.2f} ms")
